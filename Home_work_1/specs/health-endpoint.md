@@ -3,7 +3,7 @@
 > This is the live smoke-test specification (see `AGENTS.md` / setup plan, Step 9). It is a separate file from `specs/sample-health-endpoint.md`, which was only a worked example of the template.
 
 - **Spec ID:** `health-endpoint`
-- **Status:** In Review
+- **Status:** Approved
 
 > No implementation may begin until Status = Approved (see `constitution.md`, Principle 1, and `AGENTS.md`, Rule 1).
 
@@ -50,7 +50,7 @@ All resolved by human decision on 2026-09-27:
 
 ## Human Approval
 
-- Approved by: `<name>`
-- Date: `<YYYY-MM-DD>`
+- Approved by: Project maintainer (chat user)
+- Date: 2026-09-27
 
 > An agent cannot approve its own specification (see `AGENTS.md`, Section 8).
