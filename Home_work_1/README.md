@@ -1,6 +1,98 @@
-# Project Name
+# Homework assignment module 1. LLM and GenAI fundamentals
 
-> Placeholder. This section will describe what the project does and why it uses a spec-driven, AI-agent-assisted development workflow.
+## Purpose
+
+Preparation of repository with skeleton to establish the engineering and AI collaboration.
+
+## Directory structure
+
+```text
+Home_work_1/
+├── AGENTS.md
+├── README.md
+├── CONTRIBUTING.md
+├── constitution.md
+│
+├── docs/
+│   └── standards.md
+│
+├── specs/
+│   ├── TEMPLATE.md
+│   └── sample-health-endpoint.md
+│
+├── plans/
+│   └── TEMPLATE.md
+│
+├── tasks/
+│   └── TEMPLATE.md
+│
+├── skills/
+│   ├── spec-generator/
+│   │   └── SKILL.md
+│   ├── pr-reviewer/
+│   │   └── SKILL.md
+│   └── test-plan-generator/
+│       └── SKILL.md
+│
+├── skill-runs/
+│   ├── spec-generator.md
+│   ├── pr-reviewer.md
+│   └── test-plan-generator.md
+│
+├── review/
+│   └── change-template.md
+│
+├── src/
+│   └── ...
+│
+└── tests/
+    └── ...
+```
+
+### Directory and File Purpose
+
+| Path              | Purpose                                                                                                                           |
+| ----------------- | --------------------------------------------------------------------------------------------------------------------------------- |
+| `AGENTS.md`       | Canonical instructions for AI coding agents, including workflow, validation, security, protected paths, and human-approval rules. |
+| `README.md`       | Project overview and repository documentation.                                                                                    |
+| `CONTRIBUTING.md` | Contribution workflow from specification through implementation, validation, and review.                                          |
+| `constitution.md` | Seven core engineering and AI-collaboration principles.                                                                           |
+| `docs/`           | Repository-wide engineering standards and conventions.                                                                            |
+| `specs/`          | Feature specifications and the specification template.                                                                            |
+| `plans/`          | Implementation plans and the plan template.                                                                                       |
+| `tasks/`          | Implementation tasks and the task template.                                                                                       |
+| `skills/`         | Reusable AI-agent skills used during the development workflow.                                                                    |
+| `skill-runs/`     | Recorded inputs and outputs from skill executions.                                                                                |
+| `review/`         | Change-review templates and governance checks.                                                                                    |
+| `src/`            | Application source code. Kept empty until an approved implementation  exists. (Approved by ogerasymenko)                                                     |
+| `tests/`          | Automated tests. Kept empty until an approved implementation exists. (Approved by ogerasymenko)                                                     |
+
+### Development Workflow
+
+The repository follows a specification-driven workflow:
+
+```text
+Request
+   ↓
+Specification
+   ↓
+Human Approval
+   ↓
+Plan
+   ↓
+Tasks
+   ↓
+Implementation
+   ↓
+Validation
+   ↓
+Review
+```
+
+Feature implementation must not begin before the specification has been explicitly approved by a human.
+
+```
+```
 
 ## Getting Started
 

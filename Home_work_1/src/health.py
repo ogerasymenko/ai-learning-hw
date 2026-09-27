@@ -3,6 +3,17 @@
 Exposes GET /health, returning HTTP 200 with a JSON body {"status": "OK"}
 when the process is running. See specs/health-endpoint.md for the full
 specification and acceptance criteria.
+
+Dependencies:
+    Flask -- WSGI framework serving the route (approved in the spec).
+
+Security:
+    Returns no sensitive data, takes no input, requires no authentication.
+
+Example:
+    $ python3 -m src.health
+    $ curl http://127.0.0.1:5000/health
+    {"status": "OK"}
 """
 
 from flask import Flask, Response, jsonify
