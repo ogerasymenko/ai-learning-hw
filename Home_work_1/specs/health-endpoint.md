@@ -3,7 +3,7 @@
 > This is the live smoke-test specification (see `AGENTS.md` / setup plan, Step 9). It is a separate file from `specs/sample-health-endpoint.md`, which was only a worked example of the template.
 
 - **Spec ID:** `health-endpoint`
-- **Status:** Draft
+- **Status:** In Review
 
 > No implementation may begin until Status = Approved (see `constitution.md`, Principle 1, and `AGENTS.md`, Rule 1).
 
@@ -24,25 +24,29 @@ Operators and orchestration tools (e.g. a load balancer or container orchestrato
 ## Requirements
 
 1. `GET /health` returns HTTP status 200 when the application process is running.
-2. The response body indicates status "OK" (exact format pending — see Open Questions).
+2. The response body is JSON: `{"status": "OK"}`, with `Content-Type: application/json`.
 3. The endpoint requires no authentication and no request parameters.
+4. Non-`GET` requests to `/health` return HTTP 405 Method Not Allowed.
 
 ## Acceptance Criteria (Given/When/Then)
 
 - **Given** the application is running, **When** a client sends `GET /health`, **Then** the response status is `200`.
-- **Given** the application is running, **When** a client sends `GET /health`, **Then** the response body indicates status "OK" in the format agreed under Open Questions.
+- **Given** the application is running, **When** a client sends `GET /health`, **Then** the response body is the JSON object `{"status": "OK"}` and the `Content-Type` is `application/json`.
 - **Given** the application is running, **When** a client sends `GET /health` with no credentials and no parameters, **Then** the request succeeds with status `200`.
+- **Given** the application is running, **When** a client sends `POST /health`, **Then** the response status is `405 Method Not Allowed`.
 
 ## Security and Dependencies
 
-- New dependencies: none identified until the framework question is resolved. Any framework chosen must be named here with version and justification, and added to `requirements.txt` only after approval.
+- New dependency: `Flask>=3.1` (chosen by human decision on 2026-09-27). Minimal, widely used WSGI framework, sufficient for a single route; its routing returns 405 for unsupported methods by default, keeping the implementation simple (`constitution.md`, Principle 2). To be added to `requirements.txt` only after this spec is Approved.
 - Security considerations: endpoint returns no sensitive data and requires no input, so no additional validation or auth is needed. No secrets are involved.
 
 ## Open Questions
 
-- **Technology/framework:** Which technology or framework should serve the endpoint (e.g. Flask, FastAPI, Python standard library `http.server`)? This determines whether a new dependency is added.
-- **Response format:** What response body format is required — JSON (e.g. `{"status": "OK"}`), plain text (`OK`), or another format? This also determines the `Content-Type` header.
-- **Unsupported methods:** How should non-`GET` requests to `/health` (e.g. `POST`) be handled — HTTP 405 Method Not Allowed, or left to the framework default?
+All resolved by human decision on 2026-09-27:
+
+- **Technology/framework:** Flask.
+- **Response format:** JSON `{"status": "OK"}`.
+- **Unsupported methods:** return HTTP 405 Method Not Allowed.
 
 ## Human Approval
 

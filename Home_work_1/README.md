@@ -10,6 +10,7 @@ As during initial preparations I approved `Flask` usage and answered on required
 
 ![Alt text](images/1.png?raw=true "Query")
 ![Alt text](images/2.png?raw=true "Result")
+![Alt text](images/3.png?raw=true "Approve")
 
 ## Directory structure
 
