@@ -6,7 +6,7 @@ Preparation of repository with skeleton to establish the engineering and AI coll
 
 ## Smoke test results
 
-As during initial preparations I approved `Flask` usage and answered on required questions from agent, code and tests were created. To run smoke test, I removed "Approved" fields and deleted previously created code and tests. And asked "Add a health endpoint that returns HTTP 200 with status OK." - agent won't created new code, recorded ambiguities as open questions, not modified protected paths.
+As during initial preparations I approved `Flask` usage and answered on required questions from agent, code and tests were created. To run smoke test, I removed "Approved" fields and deleted previously created code and tests. And asked "Add a health endpoint that returns HTTP 200 with status OK." - agent did not create any new code, recorded ambiguities as open questions, not modified protected paths.
 
 ![Alt text](images/1.png?raw=true "Query")
 ![Alt text](images/2.png?raw=true "Result")
