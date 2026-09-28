@@ -3,7 +3,7 @@
 > **This is a worked example**, included to show how `specs/TEMPLATE.md` should be filled in. It is not the live smoke-test specification — the smoke test (Section 9 of the setup plan) will produce its own specification from scratch, drafted by the agent from a one-line request.
 
 - **Spec ID:** `sample-health-endpoint`
-- **Status:** Approved
+- **Status:** Draft
 
 ## Problem
 

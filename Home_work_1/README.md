@@ -4,6 +4,14 @@
 
 Preparation of repository with skeleton to establish the engineering and AI collaboration.
 
+## Smoke test results
+
+As during initial preparations I approved `Flask` usage and answered on required questions from agent, code and tests were created. To run smoke test, I removed "Approved" fields and deleted previously created code and tests. And asked "Add a health endpoint that returns HTTP 200 with status OK." - agent did not create any new code, recorded ambiguities as open questions, not modified protected paths.
+
+![Alt text](images/1.png?raw=true "Query")
+![Alt text](images/2.png?raw=true "Result")
+![Alt text](images/3.png?raw=true "Approve")
+
 ## Directory structure
 
 ```text
@@ -64,8 +72,8 @@ Home_work_1/
 | `skills/`         | Reusable AI-agent skills used during the development workflow.                                                                    |
 | `skill-runs/`     | Recorded inputs and outputs from skill executions.                                                                                |
 | `review/`         | Change-review templates and governance checks.                                                                                    |
-| `src/`            | Application source code. Kept empty until an approved implementation  exists. (Approved by ogerasymenko)                                                     |
-| `tests/`          | Automated tests. Kept empty until an approved implementation exists. (Approved by ogerasymenko)                                                     |
+| `src/`            | Application source code. Empty until the health-endpoint spec (`specs/health-endpoint.md`) is approved.                          |
+| `tests/`          | Automated tests. Empty until the health-endpoint spec is approved.                                                                |
 
 ### Development Workflow
 
@@ -97,3 +105,7 @@ Feature implementation must not begin before the specification has been explicit
 ## Getting Started
 
 See AGENTS.md for agent instructions and CONTRIBUTING.md for the contribution process.
+
+### Health Endpoint
+
+Not yet implemented. Spec: `specs/health-endpoint.md` (`Status: Draft`, open questions pending).
