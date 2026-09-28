@@ -72,8 +72,8 @@ Home_work_1/
 | `skills/`         | Reusable AI-agent skills used during the development workflow.                                                                    |
 | `skill-runs/`     | Recorded inputs and outputs from skill executions.                                                                                |
 | `review/`         | Change-review templates and governance checks.                                                                                    |
-| `src/`            | Application source code. Contains only the approved smoke-test health endpoint (`src/health.py`, `specs/health-endpoint.md`).    |
-| `tests/`          | Automated tests. Contains tests for the health endpoint (`tests/test_health.py`).                                                 |
+| `src/`            | Application source code. Empty until the health-endpoint spec (`specs/health-endpoint.md`) is approved.                          |
+| `tests/`          | Automated tests. Empty until the health-endpoint spec is approved.                                                                |
 
 ### Development Workflow
 
@@ -108,4 +108,4 @@ See AGENTS.md for agent instructions and CONTRIBUTING.md for the contribution pr
 
 ### Health Endpoint
 
-`GET /health` returns HTTP 200 with `{"status": "OK"}`; other methods return 405. Spec: `specs/health-endpoint.md`.
+Not yet implemented. Spec: `specs/health-endpoint.md` (`Status: Draft`, open questions pending).
