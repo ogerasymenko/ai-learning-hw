@@ -10,7 +10,8 @@ As during initial preparations I approved `Flask` usage and answered on required
 
 ![Alt text](images/1.png?raw=true "Query")
 ![Alt text](images/2.png?raw=true "Result")
-![Alt text](images/3.png?raw=true "Approve")
+![Alt text](images/3.png?raw=true "Tools")
+![Alt text](images/4.png?raw=true "Approved")
 
 ## Directory structure
 
@@ -105,6 +106,25 @@ Feature implementation must not begin before the specification has been explicit
 ## Getting Started
 
 See AGENTS.md for agent instructions and CONTRIBUTING.md for the contribution process.
+
+### Setting Up a Fresh Environment
+
+Requires Python 3.10+ (developed on 3.12). Run from the `Home_work_1/` directory:
+
+```bash
+python3 -m venv .venv
+source .venv/bin/activate
+python -m pip install --upgrade pip
+python -m pip install -r requirements.txt
+```
+
+`requirements.txt` installs the validation tooling used in `AGENTS.md` Section 4 (`pytest`, `ruff`, `mypy`, `black`, `pip-audit`). Runtime dependencies, if any, are added there only after an approved specification justifies them. Confirm the tools are available:
+
+```bash
+python -m pytest --version && ruff --version && mypy --version && black --version && pip-audit --version
+```
+
+Note: while `src/` and `tests/` are empty, `pytest` exits with code 5 ("no tests ran") and `mypy src` exits with code 2 ("no .py files"). This is expected on the empty tree, not an installation problem; record it in the change review as "not yet applicable" (`AGENTS.md` Section 4).
 
 ### Health Endpoint
 
