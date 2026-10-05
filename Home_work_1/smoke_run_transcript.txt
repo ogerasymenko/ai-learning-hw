@@ -1,0 +1,85 @@
+Add a health endpoint that returns HTTP 200 with status OK.
+
+Ran 2 commands
+I haven't written any code. AGENTS.md says I have to stop and ask first, because the spec for this endpoint isn't approved in your working tree right now.
+
+Here's what specs/health-endpoint.md shows, compared with the last commit:
+
+The spec isn't approved. It now reads Status: None, where the committed version said Approved. Rule 1 in AGENTS.md doesn't allow building against a spec that isn't approved.
+The spec contradicts itself. The "Human Approval" section still names an approver and the date 2026-09-26, but the status line no longer says Approved. I can't tell which one reflects what you intend.
+No web framework is chosen anymore. The note saying Flask was chosen by human decision is gone, and so is Flask>=3.1 in requirements.txt. Picking a framework or adding a dependency without an approved spec is on the list of things I must ask about. requirements.txt is also a protected file.
+The old implementation is staged for deletion. Git shows src/health.py and tests/test_health.py as deleted, so it looks like someone deliberately rolled back to before the smoke test.
+The requirement itself is already clear in the spec: GET /health returns 200 with {"status": "OK"}, and POST returns 405. What I need from you is how to proceed:
+
+Re-approve with Flask: confirm the spec should be Approved with Flask as the framework. I'll restore the spec and the dependency line, write src/health.py and its tests, and run the checks in AGENTS.md Section 4.
+Re-approve with another framework: tell me which one (for example FastAPI, or just the Python standard library's http.server, which adds no dependency). I'll update the spec to match, then build it.
+Leave it unapproved: if the rollback was intentional, I'll leave it as is. I can also check the spec for gaps before you approve it again.
+I need to clarify the requirements before implementation. I will create a draft specification for the health endpoint.
+
+Open questions:
+- What technology/framework should be used?
+- What response format is required?
+
+Ran a command, edited health-endpoint.md
+I rewrote specs/health-endpoint.md as a draft (Status: Draft), following the spec-generator skill. I wrote no code and didn't touch requirements.txt or any other protected file.
+
+What changed:
+
+Open Questions now has your two questions: which framework to use (with Flask, FastAPI and Python's built-in http.server as examples), and which response format (JSON, plain text or something else).
+Requirements no longer fix the response as JSON {"status": "OK"}. They say the body indicates "OK", with the exact format still to be decided.
+Dependencies now say "none identified" until a framework is chosen, because the framework decides whether anything gets added.
+Human Approval is back to placeholders. The old approver name and 2026-09-26 date came out, since they contradicted the draft status.
+Decision for you: I added a third open question about what non-GET requests should do. The earlier spec required a 405 Method Not Allowed response, but your original request didn't mention it, so I took it out of the requirements rather than assume it. If you want to keep the 405, say so and I'll put it back as a requirement.
+
+Also needs a look:
+
+Other files still assume the old decisions, and I haven't changed them: plans/health-endpoint.md, tasks/health-endpoint.md and review/health-endpoint-review.md may still mention Flask or JSON. They'll need updating once you answer the questions.
+src/health.py and tests/test_health.py are still staged for deletion from before.
+Once you've answered the questions and marked the spec Approved, I can update the plan and tasks and then build it.
+
+
+health-endpoint.md
++15
+-8
+
+Use Flask and JSON {"status": "OK"}, keep 405
+
+Recorded resolved decisions in the draft spec
+I've added your three decisions to specs/health-endpoint.md and moved its status to In Review. I haven't written any code yet.
+
+Framework: Flask (Flask>=3.1), listed as the new dependency with the reason for choosing it. Flask also returns 405 for unsupported methods on its own, so no extra code is needed for that. It goes into requirements.txt only after approval.
+Response: GET /health returns 200 with the JSON body {"status": "OK"}, and there's now a check that it's served as JSON.
+Other methods: requests like POST /health return 405 Method Not Allowed. This is back as a requirement with its own check.
+Open Questions: all three are marked resolved by your decisions, dated 2026-09-27.
+Decision for you: the spec still needs your approval before I build anything, because the project rules don't let me approve a spec myself. The approval section still has blank name and date placeholders. You can either:
+
+reply "Approved", with the name to record, and I'll fill in the approval section and set the status to Approved; or
+edit the spec yourself.
+Once it's approved, I'll:
+
+Add Flask>=3.1 back to requirements.txt. That file is protected, and the approved spec is what permits the change.
+Update the plan and task files so they match the spec.
+Write src/health.py and tests/test_health.py, which are currently staged as deleted.
+Update the README.
+Run pytest, ruff, mypy, black and pip-audit, and record their output in review/health-endpoint-review.md.
+
+Approved
+
+Ran 5 commands, created 2 files, edited a file
+The health endpoint is built: GET /health returns 200 with {"status": "OK"}, and POST /health returns 405. All five checks pass. I recorded your approval in specs/health-endpoint.md as "Project maintainer (chat user)" with today's date, since you didn't give a name. Tell me if you want a different name there.
+
+What changed:
+
+src/health.py: a small Flask app with just the /health route. Flask rejects other methods with 405 by default, so no extra code was needed. The docstring covers purpose, the Flask dependency, configuration (there is none), security and an example of how to run it.
+tests/test_health.py: three tests covering all four acceptance criteria in the spec: the 200 status, the JSON body and its content type, access with no credentials or parameters, and the 405 on POST.
+requirements.txt: added Flask>=3.1, with a comment pointing to the approved spec. This file is protected, and the approved spec is what permits the change.
+Plan, tasks and review: plans/health-endpoint.md and tasks/health-endpoint.md now match the spec. review/health-endpoint-review.md has all 8 checklist items answered, with the command output as evidence.
+Checks (the first ruff run flagged an unnecessary lint-suppression comment in the tests; I removed it and re-ran everything):
+
+Command	Result
+python3 -m pytest tests/	3 passed
+ruff check .	All checks passed
+mypy src	No issues
+black --check .	2 files unchanged
+pip-audit -r requirements.txt	No known vulnerabilities
+I didn't change README.md, because its health endpoint section is already correct. Nothing is committed yet, and src/ and tests/ are new, untracked folders. Want me to commit this on a branch and open a PR?

@@ -134,7 +134,7 @@ Stop and ask — do not guess — when:
 - A task would require choosing an unspecified technology, library, or framework.
 - A task would touch a protected path.
 - A task would add a new dependency not already justified in an approved spec.
-- No specification exists yet, or the existing specification's `Status` is not `Approved`.
+- No specification exists yet, or the existing specification's `Status` is not `Approved`. An agent cannot approve its own specification (Section 9, Rule 6).
 - Validation fails and the fix is not a small, obvious correction within approved scope.
 
 ## 9. Required Rules
@@ -144,3 +144,4 @@ Stop and ask — do not guess — when:
 3. **Never expose secrets or weaken security and tests** to make a change pass.
 4. **Never modify protected paths without explicit approval** recorded in the relevant specification or review.
 5. **If requirements are unclear, stop and ask a human.** Do not guess, assume, or fill gaps silently.
+6. **An agent never approves its own work.** Only a human may set a specification's `Status` to `Approved` or fill in its Human Approval section. An agent may draft a spec and set it to `Draft` or `In Review`, but must wait for the human's explicit approval in chat or in the spec itself. This also applies to a specification the agent drafted or edited.
