@@ -1,0 +1,43 @@
+{
+  "format_version": "1.2",
+  "terraform_version": "1.9.5",
+  "resource_changes": [
+    {
+      "address": "aws_db_instance.main",
+      "type": "aws_db_instance",
+      "name": "main",
+      "change": {
+        "actions": [
+          "delete"
+        ],
+        "before": {
+          "identifier": "orders-prod",
+          "engine": "postgres",
+          "allocated_storage": 200
+        },
+        "after": null
+      }
+    },
+    {
+      "address": "aws_instance.app",
+      "type": "aws_instance",
+      "name": "app",
+      "change": {
+        "actions": [
+          "update"
+        ],
+        "before": {
+          "tags": {
+            "team": "orders"
+          }
+        },
+        "after": {
+          "tags": {
+            "team": "orders",
+            "env": "prod"
+          }
+        }
+      }
+    }
+  ]
+}

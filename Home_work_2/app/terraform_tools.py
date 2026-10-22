@@ -5,18 +5,55 @@ import json
 from pathlib import Path
 from typing import Any
 
-
-PLAN_PATH = Path(__file__).resolve().parent.parent / "examples" / "plan.json"
-
-
-def _load_plan(path: Path = PLAN_PATH) -> dict[str, Any]:
-    return json.loads(path.read_text(encoding="utf-8"))
+DEFAULT_PLAN_PATH = Path(__file__).resolve().parent.parent / "examples" / "plan.json"
+MAX_PLAN_BYTES = 5 * 1024 * 1024
 
 
-def plan_summary(path: Path = PLAN_PATH) -> str:
+class PlanError(ValueError):
+    """The supplied plan is unreadable or is not a Terraform plan."""
+
+
+def parse_plan(text: str) -> dict[str, Any]:
+    """Parse and validate `terraform show -json` output."""
+    if not text.strip():
+        raise PlanError("plan input is empty")
+    try:
+        plan = json.loads(text)
+    except json.JSONDecodeError as exc:
+        raise PlanError(f"plan is not valid JSON: {exc}") from exc
+    if not isinstance(plan, dict):
+        raise PlanError("plan must be a JSON object (terraform show -json output)")
+    changes = plan.get("resource_changes", [])
+    if not isinstance(changes, list) or not all(isinstance(r, dict) for r in changes):
+        raise PlanError("plan.resource_changes must be a list of objects")
+    return plan
+
+
+def load_plan(path: Path = DEFAULT_PLAN_PATH) -> dict[str, Any]:
+    try:
+        size = path.stat().st_size
+        if size > MAX_PLAN_BYTES:
+            raise PlanError(f"plan file is {size} bytes; the limit is {MAX_PLAN_BYTES}")
+        return parse_plan(path.read_text(encoding="utf-8"))
+    except OSError as exc:
+        raise PlanError(f"cannot read plan file: {exc}") from exc
+
+
+def read_plan_stream(stream) -> dict[str, Any]:
+    data = stream.read(MAX_PLAN_BYTES + 1)
+    if len(data) > MAX_PLAN_BYTES:
+        raise PlanError(f"plan input exceeds the {MAX_PLAN_BYTES} byte limit")
+    return parse_plan(data)
+
+
+def plan_addresses(plan: dict[str, Any]) -> set[str]:
+    return {r.get("address", "unknown") for r in plan.get("resource_changes", [])}
+
+
+def plan_summary(plan: dict[str, Any]) -> str:
     """What will Terraform change?"""
-    plan = _load_plan(path)
     counts = {"create": 0, "update": 0, "delete": 0, "replace": 0}
+    unchanged = 0
     addresses: dict[str, list[str]] = {k: [] for k in counts}
 
     for resource in plan.get("resource_changes", []):
@@ -34,6 +71,8 @@ def plan_summary(path: Path = PLAN_PATH) -> str:
         elif set(actions) == {"delete", "create"}:
             counts["replace"] += 1
             addresses["replace"].append(address)
+        else:
+            unchanged += 1  # no-op / read / unknown action lists
 
     lines = [
         f"Terraform {plan.get('terraform_version', 'unknown')} plan",
@@ -41,6 +80,7 @@ def plan_summary(path: Path = PLAN_PATH) -> str:
         f"update: {counts['update']}",
         f"delete: {counts['delete']}",
         f"replace: {counts['replace']}",
+        f"no-op/read: {unchanged}",
     ]
     for action in ("create", "update", "delete", "replace"):
         if addresses[action]:
@@ -48,9 +88,8 @@ def plan_summary(path: Path = PLAN_PATH) -> str:
     return "\n".join(lines)
 
 
-def resource_changes(resource: str | None = None, path: Path = PLAN_PATH) -> str:
+def resource_changes(plan: dict[str, Any], resource: str | None = None) -> str:
     """What exactly changed for a resource?"""
-    plan = _load_plan(path)
     resources = plan.get("resource_changes", [])
     if resource:
         resources = [r for r in resources if r.get("address") == resource]
@@ -61,9 +100,8 @@ def resource_changes(resource: str | None = None, path: Path = PLAN_PATH) -> str
     return json.dumps(resources, indent=2, ensure_ascii=False)
 
 
-def risk_context(path: Path = PLAN_PATH) -> str:
+def risk_findings(plan: dict[str, Any]) -> list[str]:
     """Deterministically identify obvious risk signals in the plan."""
-    plan = _load_plan(path)
     findings: list[str] = []
 
     for resource in plan.get("resource_changes", []):
@@ -84,4 +122,10 @@ def risk_context(path: Path = PLAN_PATH) -> str:
         if "password" in before and "password" in after:
             findings.append(f"credential-related change: {address}")
 
+    return findings
+
+
+def risk_context(plan: dict[str, Any]) -> str:
+    """What deterministic risk signals are present? (text form of risk_findings)"""
+    findings = risk_findings(plan)
     return "\n".join(findings) if findings else "No deterministic high-signal risk found."
