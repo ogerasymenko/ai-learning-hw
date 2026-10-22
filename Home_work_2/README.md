@@ -57,7 +57,7 @@ or is not a Terraform plan. Plans larger than 5 MB are rejected.
 ## Evaluate the agent (pass^3)
 
 ```bash
-python -m evals.run                          # 5 cases x 3 runs against the real model
+python -m evals.run  # 5 cases x 3 runs against the real model
 python -m evals.run -k 5 --case e_prompt_injection
 ```
 
