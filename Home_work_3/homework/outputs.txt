@@ -1,0 +1,288 @@
+***
+
+python3 homework/task1.py "My name is Alex"
+
+[thread 1] messages already saved in memory.db: 0
+[thread 1] USER: My name is Alex
+[thread 1] AI: Nice to meet you, Alex.
+python3 homework/task1.py "What's my name?"
+
+[thread 1] messages already saved in memory.db: 2
+[thread 1] USER: What's my name?
+[thread 1] AI: Your name is Alex.
+
+rm homework/memory.db 
+python3 homework/task1.py "What's my name?"
+
+[thread 1] messages already saved in memory.db: 0
+[thread 1] USER: What's my name?
+[thread 1] AI: I don’t know your name—you haven’t shared it with me.
+
+***
+
+python3 homework/task2.py
+
+🛠  generate (attempt 1): Validates that the string consists entirely of one or more integer-and-unit components, then sums their values in seconds. Malformed or empty strings raise ValueError.
+❌ test: ValueError: invalid duration
+🤔 reflect: - The regex `(?:\d+[hms])+` only accepts duration parts joined with no spaces (for example, `1h30m`). If the test passes `1h 30m`, validation raises `ValueError`.
+- Match the required input format—if 
+
+🛠  generate (attempt 2): The validation allows whitespace between duration parts, and parsing still sums each numeric value using its unit multiplier.
+❌ test: ValueError: invalid duration
+🤔 reflect: - The `ValueError` comes from the initial `fullmatch`: the test input doesn’t match the code’s narrow format—one or more integer-and-lowercase-`h`/`m`/`s` chunks. The traceback doesn’t show the input,
+
+🛠  generate (attempt 3): This accepts integer or decimal values, uppercase or lowercase units, and optional whitespace around values and units. It sums the chunks and returns the total number of whole seconds.
+✅ test: all tests passed
+🔍 reviewer: changes requested (1/1): Add a docstring describing what the function does and when it raises. Also avoid silently truncating fractional totals with `int(total)` (for example, `0.5s` becomes `0`); reject totals that are not whole seconds or define and document an intentional rounding policy.
+🙋 reviewer rejected the code twice: asking a human
+
+────────────────────────────────────────────────────────────
+import re
+from decimal import Decimal
+
+def parse_duration(s: str) -> int:
+    pattern = r"\s*(?:(\d+(?:\.\d+)?)\s*([hms])\s*)+"
+    if not s or not re.fullmatch(pattern, s, re.IGNORECASE):
+        raise ValueError("invalid duration")
+    units = {"h": 3600, "m": 60, "s": 1}
+    total = sum(Decimal(value) * units[unit.lower()]
+                for value, unit in re.findall(r"(\d+(?:\.\d+)?)\s*([hms])", s, re.IGNORECASE))
+    return int(total)
+────────────────────────────────────────────────────────────
+Last reviewer comments: Add a docstring describing what the function does and when it raises. Also avoid silently truncating fractional totals with `int(total)` (for example, `0.5s` becomes `0`); reject totals that are not whole seconds or define and document an intentional rounding policy.
+The AI reviewer rejected the code 1 times. Accept the code anyway? (yes / your feedback) > add doc string to parse_duration function, make refactoring
+
+🛠  generate (attempt 4): Validates the entire string before summing its duration components, using Decimal to avoid floating-point rounding.
+✅ test: all tests passed
+🔍 reviewer: changes requested (1/1): Add a docstring description of when the function raises, such as a `Raises` section stating that invalid duration strings raise `ValueError`.
+🙋 reviewer rejected the code twice: asking a human
+
+────────────────────────────────────────────────────────────
+import re
+from decimal import Decimal
+
+def parse_duration(s: str) -> int:
+    """Convert a duration string with h, m, and s units to whole seconds."""
+    pattern = r"\s*(?:(\d+(?:\.\d+)?)\s*([hms])\s*)+"
+    if not s or not re.fullmatch(pattern, s, re.IGNORECASE):
+        raise ValueError("invalid duration")
+
+    units = {"h": 3600, "m": 60, "s": 1}
+    parts = re.findall(r"(\d+(?:\.\d+)?)\s*([hms])", s, re.IGNORECASE)
+    return int(sum(Decimal(value) * units[unit.lower()] for value, unit in parts))
+────────────────────────────────────────────────────────────
+Last reviewer comments: Add a docstring description of when the function raises, such as a `Raises` section stating that invalid duration strings raise `ValueError`.
+The AI reviewer rejected the code 1 times. Accept the code anyway? (yes / your feedback) > yes
+
+Final code:
+import re
+from decimal import Decimal
+
+def parse_duration(s: str) -> int:
+    """Convert a duration string with h, m, and s units to whole seconds."""
+    pattern = r"\s*(?:(\d+(?:\.\d+)?)\s*([hms])\s*)+"
+    if not s or not re.fullmatch(pattern, s, re.IGNORECASE):
+        raise ValueError("invalid duration")
+
+    units = {"h": 3600, "m": 60, "s": 1}
+    parts = re.findall(r"(\d+(?:\.\d+)?)\s*([hms])", s, re.IGNORECASE)
+    return int(sum(Decimal(value) * units[unit.lower()] for value, unit in parts))
+
+Result: code accepted by the human after the AI reviewer rejected it ✅, attempts: 4, reviewer rejections left in state: 1
+
+***
+
+python3 homework/task3_solution.py
+
+🛠  generate (attempt 1): Validates that the string consists of one or more number-and-unit pairs, then sums their values in seconds.
+❌ test: ValueError: Invalid duration
+🤔 reflect: - The `ValueError` comes from `fullmatch`: the input used by the test doesn’t match the strict pattern, which allows only consecutive number-unit pairs such as `1h30m`—no spaces or other separators.
+-
+
+🛠  generate (attempt 2): Whitespace is removed before validation, allowing durations such as `1h 30m` while still rejecting malformed input. Valid number-unit pairs are then converted and summed in seconds.
+❌ test: ValueError: Invalid duration
+🤔 reflect: - `ValueError` means the test passed a string that didn’t match `(?:\d+[hms])+` after whitespace was removed. The function only accepts lowercase, whole-number values with `h`, `m`, or `s` (for exampl
+
+🛠  generate (attempt 3): The parser accepts compact or spaced duration parts, case-insensitive short and long unit names, and decimal values. It returns zero for an empty string and raises ValueError for unrecognized or malformed input.
+❌ test: AssertionError: expected ValueError for ''
+🏳  giving up after 3 attempts
+
+Result: code failed the tests ❌, attempts: 3
+ python3 homework/task3_result.py 
+═══ 1. Checkpoint history of thread 'workshop-1' (10 checkpoints) ═══
+step  id      next           attempts  error
+  -1  fd84d9  ('__start__',)        -  -
+   0  d30fce  ('generate',)         0  -
+   1  c6b89a  ('test',)             1  -
+   2  b8a5da  ('reflect',)          1  ValueError: Invalid duration
+   3  409491  ('generate',)         1  ValueError: Invalid duration
+   4  66047e  ('test',)             2  ValueError: Invalid duration
+   5  e640d9  ('reflect',)          2  ValueError: Invalid duration
+   6  1e5447  ('generate',)         2  ValueError: Invalid duration
+   7  93bfad  ('test',)             3  ValueError: Invalid duration
+   8  fb0dc7  (end)                 3  AssertionError: expected ValueError for ''
+
+═══ 2. First checkpoint right after `test` failed ═══
+checkpoint b8a5da: step=2, attempts=1, next=('reflect',)
+error: ValueError: Invalid duration
+
+═══ 3. Fork from it with feedback: 'Use a regular expression with re.fullmatch' ═══
+nodes executed in the replay (steps before the checkpoint are NOT re-run):
+🤔 reflect: - `ValueError` is raised because the test’s input doesn’t match `(?:\d+[hms])+`. That pattern accepts only adjacent integer/unit pairs such as `"1h2m"`—not spaces, uppercase units, or other formats.
+-
+   ▶ reflect
+
+🛠  generate (attempt 2): The full-match pattern accepts integer duration components with optional whitespace and case-insensitive units, while rejecting any unparsed text.
+   ▶ generate (attempt 2)
+✅ test: all tests passed
+   ▶ test: passed
+
+────────────────────────────────────────────────────────────
+def parse_duration(s: str) -> int:
+    import re
+    if not re.fullmatch(r'\s*(?:\d+\s*[hms]\s*)+', s, re.IGNORECASE):
+        raise ValueError("Invalid duration")
+    return sum(int(n) * {'h': 3600, 'm': 60, 's': 1}[unit.lower()] for n, unit in re.findall(r'(\d+)\s*([hms])', s, re.IGNORECASE))
+────────────────────────────────────────────────────────────
+Accept the code? (yes / your feedback) > yes
+   human: yes
+   ▶ human_review
+
+═══ Result ═══
+first node after the checkpoint: reflect;  generate calls in the replay: 1
+history grew from 10 to 15 checkpoints (a new branch)
+tests passing: True, attempts: 2
+
+Final code:
+def parse_duration(s: str) -> int:
+    import re
+    if not re.fullmatch(r'\s*(?:\d+\s*[hms]\s*)+', s, re.IGNORECASE):
+        raise ValueError("Invalid duration")
+    return sum(int(n) * {'h': 3600, 'm': 60, 's': 1}[unit.lower()] for n, unit in re.findall(r'(\d+)\s*([hms])', s, re.IGNORECASE))
+
+***
+
+python3 homework/task4.py "What notes do I have about Kafka?" "Add a summary of all Kafka notes to kafka-summary.md"
+
+USER: What notes do I have about Kafka?
+[agent] calls: list_notes({})
+[tool]  list_notes → 'kafka-basics.md — Kafka basics\nkafka-consumer-groups.md — Kafka consumer groups\npython-tips.md — Python tips\nterraform-state.md — Terraform state'
+[agent] calls: read_note({'name': 'kafka-basics.md'}), read_note({'name': 'kafka-consumer-groups.md'})
+[tool]  read_note → '# Kafka basics\n\n- A topic is split into partitions; order is guaranteed only inside one partition.\n- Producers choose the partition by key (same key -…'
+[tool]  read_note → '# Kafka consumer groups\n\n- Consumers in one group share the partitions of a topic: one partition goes to one consumer.\n- More consumers than partition…'
+AI: You have two Kafka notes:
+
+- **Kafka basics** (`kafka-basics.md`): topics and partitions, ordering, key-based partitioning, retention, and replication.
+- **Kafka consumer groups** (`kafka-consumer-groups.md`): partition assignment, idle consumers, per-group offsets, consumer lag, and rebalances.
+
+USER: Add a summary of all Kafka notes to kafka-summary.md
+[agent] calls: list_notes({})
+[tool]  list_notes → 'kafka-basics.md — Kafka basics\nkafka-consumer-groups.md — Kafka consumer groups\npython-tips.md — Python tips\nterraform-state.md — Terraform state'
+[agent] calls: read_note({'name': 'kafka-basics.md'}), read_note({'name': 'kafka-consumer-groups.md'})
+[tool]  read_note → '# Kafka basics\n\n- A topic is split into partitions; order is guaranteed only inside one partition.\n- Producers choose the partition by key (same key -…'
+[tool]  read_note → '# Kafka consumer groups\n\n- Consumers in one group share the partitions of a topic: one partition goes to one consumer.\n- More consumers than partition…'
+[agent] wants to change something
+⏸  Run these tool calls? (yes / reason for rejecting)
+    write_note → kafka-summary.md (new file)
+    ──────────────────────────────────────────────────
+    # Kafka summary
+    
+    ## Topics, partitions, and durability
+    - Topics are split into partitions. Ordering is guaranteed only within a single partition.
+    - Producers can choose partitions by key; messages with the same key go to the same partition.
+    - Messages are retained for the configured retention period (7 days by default), not until they are consumed.
+    - A replication factor of 3 with `min.insync.replicas=2` can survive the loss of one broker.
+    
+    ## Consumer groups
+    - Consumers in a group share a topic's partitions, with each partition assigned to one consumer in the group.
+    - If there are more consumers than partitions, some consumers remain idle.
+    - Offsets are committed per group, so separate groups can read the same topic independently.
+    - Consumer lag is the latest offset minus the committed offset. Alert if it continues to grow for several minutes.
+    - Rebalances pause consumption; cooperative-sticky assignment can shorten them.
+    ──────────────────────────────────────────────────
+    your answer > yes
+[tool]  write_note → 'Created kafka-summary.md (937 chars).'
+AI: Created `kafka-summary.md` with a summary of both Kafka notes.
+
+***
+
+python3 homework/task5.py
+
+🛠  generate_one [Use the simplest possible approach.] done: Find each number-unit pair and sum its value in seconds.
+🛠  generate_one [Parse the string character by character, without regular expressions.] done: Accumulate each numeric value character by character, then add it using the multiplier for its unit.
+🛠  generate_one [Use a regular expression (re.fullmatch).] done: The regex requires the entire string to contain one or more duration components in hours, minutes, and seconds order. Invalid or empty strings raise `ValueError`.
+
+📋 3 candidates:
+
+  candidate 1 — Use the simplest possible approach.
+    def parse_duration(s: str) -> int:
+        import re
+        return sum(int(n) * {'h': 3600, 'm': 60, 's': 1}[unit] for n, unit in re.findall(r'(\d+)([hms])', s))
+    → ❌ AssertionError: whitespace and case must be ignored
+
+  candidate 2 — Use a regular expression (re.fullmatch).
+    import re
+    
+    def parse_duration(s: str) -> int:
+        match = re.fullmatch(r'(\d+h)?(\d+m)?(\d+s)?', s)
+        if not match or not any(match.groups()):
+            raise ValueError("invalid duration")
+        return sum(int(value[:-1]) * factor for value, factor in zip(match.groups(), (3600, 60, 1)) if value)
+    → ❌ ValueError: invalid duration
+
+  candidate 3 — Parse the string character by character, without regular expressions.
+    def parse_duration(s: str) -> int:
+        total = value = 0
+        has_digit = False
+        units = {'h': 3600, 'm': 60, 's': 1}
+        for c in s:
+            if c.isdigit():
+                value = value * 10 + int(c)
+                has_digit = True
+            elif c in units and has_digit:
+                total += value * units[c]
+                value = 0
+                has_digit = False
+            else:
+                raise ValueError("invalid duration")
+        if has_digit:
+            raise ValueError("missing duration unit")
+        return total
+    → ❌ ValueError: invalid duration
+
+😕 no candidate passed: falling back to the reflect → generate loop
+🤔 reflect: - The regex only recognizes lowercase `h`, `m`, and `s`, and requires each number to be immediately followed by its unit. Inputs with uppercase units or spaces therefore aren’t parsed correctly.
+- Nor
+
+🛠  generate (attempt 2): Remove whitespace and normalize units to lowercase before validating and summing each number-unit pair.
+✅ test: all tests passed
+
+────────────────────────────────────────────────────────────
+def parse_duration(s: str) -> int:
+    import re
+    s = re.sub(r'\s+', '', s).lower()
+    if not re.fullmatch(r'(?:\d+[hms])+', s):
+        raise ValueError("invalid duration")
+    return sum(int(n) * {'h': 3600, 'm': 60, 's': 1}[unit] for n, unit in re.findall(r'(\d+)([hms])', s))
+────────────────────────────────────────────────────────────
+Accept the code? (yes / your feedback) > yes
+
+Result: code accepted ✅, attempts: 2, parallel winner: none (fell back to the loop)
+
+***
+
+python3 homework/task6.py --budget 6
+
+TASK: Write a Python function slugify(title: str, max_len: int = 40) -> str that turns an article
+title into a URL slug:
+- lowercase; accented letters become plain ones (é → e); any other non [a-z0-9] characters are separators;
+- words are joined by single hyphens, no leading or trailing hyphens;
+- if the slug is longer than max_len, cut it at the last hyphen that keeps it within max_len
+  (if there is no such hyphen, hard-cut at max_len).
+Example from the product manager's ticket — include it in the tests as is:
+  slugify('Hello, World!', max_len=8) == 'hello-wo'
+
+🧭 supervisor → planner: The specification and tests are not written yet; the planner should define them, including the required example.
+📝 planner: spec ready, 6 tests
+Traceback (most recent call last):
+langchain_openai.chat_models.base.OpenAIRateLimitError: Error code: 429 - {'error': {'message': 'Rate limit reached for gpt-6-luna in organization my-org on requests per day (RPD): Limit 50, Used 50, Requested 1. Please try again in 28m48s.', 'code': 'rate_limit_exceeded'}}
