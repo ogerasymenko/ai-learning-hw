@@ -1,0 +1,24 @@
+{
+    "mcpServers": {
+        "github": {
+            "type": "http",
+            "url": "https://api.githubcopilot.com/mcp/",
+            "headers": {
+                "Authorization": "Bearer ${GITHUB_PAT}",
+                "X-MCP-Toolsets": "repos,issues",
+                "X-MCP-Readonly": "true"
+            }
+        },
+        "microsoft-learn": {
+            "type": "http",
+            "url": "https://learn.microsoft.com/api/mcp"
+        },
+        "local-devops": {
+            "type": "stdio",
+            "command": "python3",
+            "args": [
+                "local_mcp/devops_server.py"
+            ]
+        }
+    }
+}

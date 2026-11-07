@@ -1,0 +1,2 @@
+# Local MCP server (local_mcp/devops_server.py)
+mcp>=2.2,<3

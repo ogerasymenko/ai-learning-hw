@@ -1,0 +1,67 @@
+{
+  "environments": {
+    "dev": {
+      "status": "healthy",
+      "region": "westeurope",
+      "services": {"orders-api": "healthy", "payments-api": "healthy"},
+      "open_alerts": []
+    },
+    "staging": {
+      "status": "healthy",
+      "region": "westeurope",
+      "services": {"orders-api": "healthy", "payments-api": "healthy"},
+      "open_alerts": []
+    },
+    "prod": {
+      "status": "degraded",
+      "region": "westeurope",
+      "services": {"orders-api": "degraded", "payments-api": "healthy"},
+      "open_alerts": [
+        "orders-api: p95 latency 4.8s (threshold 1s) for 25 min",
+        "orders-api: HTTP 503 rate 6% during traffic peak"
+      ]
+    }
+  },
+  "deployments": {
+    "orders-api": {
+      "prod": {
+        "platform": "Azure Container Apps",
+        "revision": "orders-api--0000042",
+        "deployed_at": "2026-11-06T18:20:00Z",
+        "deployed_by": "ci-pipeline",
+        "image": "contoso.azurecr.io/orders-api:1.14.2",
+        "active_revisions_mode": "single",
+        "replicas": {"current": 1, "min": 1, "max": 1},
+        "scale_rules": [{"name": "http-rule", "type": "http", "concurrent_requests": 50}],
+        "traffic_percent": {"orders-api--0000042": 100},
+        "metrics": {"concurrent_requests_avg": 180, "cpu_percent": 91}
+      },
+      "staging": {
+        "platform": "Azure Container Apps",
+        "revision": "orders-api--0000042",
+        "deployed_at": "2026-11-06T16:05:00Z",
+        "deployed_by": "ci-pipeline",
+        "image": "contoso.azurecr.io/orders-api:1.14.2",
+        "active_revisions_mode": "single",
+        "replicas": {"current": 2, "min": 1, "max": 5},
+        "scale_rules": [{"name": "http-rule", "type": "http", "concurrent_requests": 50}],
+        "traffic_percent": {"orders-api--0000042": 100},
+        "metrics": {"concurrent_requests_avg": 12, "cpu_percent": 20}
+      }
+    },
+    "payments-api": {
+      "prod": {
+        "platform": "Azure Container Apps",
+        "revision": "payments-api--0000017",
+        "deployed_at": "2026-11-01T09:00:00Z",
+        "deployed_by": "ci-pipeline",
+        "image": "contoso.azurecr.io/payments-api:2.3.0",
+        "active_revisions_mode": "single",
+        "replicas": {"current": 3, "min": 2, "max": 10},
+        "scale_rules": [{"name": "http-rule", "type": "http", "concurrent_requests": 100}],
+        "traffic_percent": {"payments-api--0000017": 100},
+        "metrics": {"concurrent_requests_avg": 40, "cpu_percent": 35}
+      }
+    }
+  }
+}
