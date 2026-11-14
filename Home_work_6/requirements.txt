@@ -1,0 +1,4 @@
+openai>=1.0.0
+langfuse>=2.0.0
+arize-phoenix>=4.0.0
+openinference-instrumentation-openai>=0.1.0
